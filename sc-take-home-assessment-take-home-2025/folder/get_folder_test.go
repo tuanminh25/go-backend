@@ -43,12 +43,7 @@ func Test_folder_GetAllChildFolders(t *testing.T) {
 			name:       "Valid folder with children",
 			orgID:      orgID1,
 			folderName: "alpha",
-			folders: []folder.Folder{
-				{Name: "alpha", Paths: "alpha", OrgId: orgID1},
-				{Name: "bravo", Paths: "alpha.bravo", OrgId: orgID1},
-				{Name: "charlie", Paths: "alpha.bravo.charlie", OrgId: orgID1},
-				{Name: "delta", Paths: "alpha.delta", OrgId: orgID1},
-			},
+			folders:    getSampleFolders(orgID1, orgID2),
 			want: []folder.Folder{
 				{Name: "bravo", Paths: "alpha.bravo", OrgId: orgID1},
 				{Name: "charlie", Paths: "alpha.bravo.charlie", OrgId: orgID1},
@@ -59,10 +54,7 @@ func Test_folder_GetAllChildFolders(t *testing.T) {
 			name:       "Valid folder without children",
 			orgID:      orgID1,
 			folderName: "echo",
-			folders: []folder.Folder{
-				{Name: "alpha", Paths: "alpha", OrgId: orgID1},
-				{Name: "echo", Paths: "echo", OrgId: orgID1},
-			},
+			folders:    getSampleFolders(orgID1, orgID2),
 			want: []folder.Folder{},
 		},
 		{
