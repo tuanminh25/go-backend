@@ -22,71 +22,73 @@ func Test_folder_MoveFolder(t *testing.T) {
 	}{
 		{
 			name: "Valid move",
-			folders: []folder.Folder{
-				{Name: "alpha", Paths: "alpha", OrgId: orgID1},
-				{Name: "bravo", Paths: "alpha.bravo", OrgId: orgID1},
-				{Name: "charlie", Paths: "charlie", OrgId: orgID1},
-			},
+			folders:    getSampleFolders2(orgID1, orgID2),
 			sourceName: "bravo",
-			destName:   "charlie",
+			destName:   "delta",
 			want: []folder.Folder{
 				{Name: "alpha", Paths: "alpha", OrgId: orgID1},
-				{Name: "charlie", Paths: "charlie", OrgId: orgID1},
-				{Name: "bravo", Paths: "charlie.bravo", OrgId: orgID1},
+				{Name: "bravo", Paths: "alpha.delta.bravo", OrgId: orgID1},
+				{Name: "charlie", Paths: "alpha.delta.bravo.charlie", OrgId: orgID1},
+				{Name: "delta", Paths: "alpha.delta", OrgId: orgID1},
+				{Name: "echo", Paths: "alpha.delta.echo", OrgId: orgID1},
+				{Name: "foxtrot", Paths: "foxtrot", OrgId: orgID2},
+				{Name: "golf", Paths: "golf", OrgId: orgID1},
 			},
 			expectError: false,
 		},
 		{
-			name: "Move to non-existent destination",
-			folders: []folder.Folder{
+			name: "Valid move 2",
+			folders:    getSampleFolders2(orgID1, orgID2),
+			sourceName: "bravo",
+			destName:   "golf",
+			want: []folder.Folder{
 				{Name: "alpha", Paths: "alpha", OrgId: orgID1},
-				{Name: "bravo", Paths: "alpha.bravo", OrgId: orgID1},
+				{Name: "bravo", Paths: "golf.bravo", OrgId: orgID1},
+				{Name: "charlie", Paths: "golf.bravo.charlie", OrgId: orgID1},
+				{Name: "delta", Paths: "alpha.delta", OrgId: orgID1},
+				{Name: "echo", Paths: "alpha.delta.echo", OrgId: orgID1},
+				{Name: "foxtrot", Paths: "foxtrot", OrgId: orgID2},
+				{Name: "golf", Paths: "golf", OrgId: orgID1},
 			},
+			expectError: false,
+		},
+		{
+			name: "Invalid move: move to child of itself",
+			folders:    getSampleFolders2(orgID1, orgID2),
 			sourceName:  "bravo",
 			destName:    "charlie",
 			want:        nil,
 			expectError: true,
 		},
 		{
-			name: "Move non-existent source",
-			folders: []folder.Folder{
-				{Name: "alpha", Paths: "alpha", OrgId: orgID1},
-				{Name: "bravo", Paths: "alpha.bravo", OrgId: orgID1},
-			},
-			sourceName:  "charlie",
-			destName:    "alpha",
-			want:        nil,
-			expectError: true,
-		},
-		{
-			name: "Move to different organization",
-			folders: []folder.Folder{
-				{Name: "alpha", Paths: "alpha", OrgId: orgID1},
-				{Name: "bravo", Paths: "bravo", OrgId: orgID2},
-			},
-			sourceName:  "alpha",
+			name: "Invalid move: Move to itself",
+			folders:    getSampleFolders2(orgID1, orgID2),
+			sourceName:  "bravo",
 			destName:    "bravo",
 			want:        nil,
 			expectError: true,
 		},
 		{
-			name: "Move to itself",
-			folders: []folder.Folder{
-				{Name: "alpha", Paths: "alpha", OrgId: orgID1},
-			},
-			sourceName:  "alpha",
-			destName:    "alpha",
+			name: "Invalid move: Move to different organization",
+			folders:    getSampleFolders2(orgID1, orgID2),
+			sourceName:  "bravo",
+			destName:    "foxtrot",
 			want:        nil,
 			expectError: true,
 		},
 		{
-			name: "Move to child of itself",
-			folders: []folder.Folder{
-				{Name: "alpha", Paths: "alpha", OrgId: orgID1},
-				{Name: "bravo", Paths: "alpha.bravo", OrgId: orgID1},
-			},
-			sourceName:  "alpha",
-			destName:    "bravo",
+			name: "Invalid move: Move non-existent source",
+			folders:    getSampleFolders2(orgID1, orgID2),
+			sourceName:  "invalid_folder",
+			destName:    "delta",
+			want:        nil,
+			expectError: true,
+		},
+		{
+			name: "Move to non-existent destination",
+			folders:    getSampleFolders2(orgID1, orgID2),
+			sourceName:  "bravo",
+			destName:    "invalid_folder",
 			want:        nil,
 			expectError: true,
 		},
@@ -101,6 +103,10 @@ func Test_folder_MoveFolder(t *testing.T) {
 				assert.Error(t, err)
 				assert.Nil(t, got)
 			} else {
+				// Sort both the expected and actual results
+				sortFolders(tt.want)
+				sortFolders(got)
+				
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, got)
 			}

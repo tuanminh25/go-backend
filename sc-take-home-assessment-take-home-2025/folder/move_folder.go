@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+
 func (f *driver) MoveFolder(name string, dst string) ([]Folder, error) {
 	// Find the source and destination folders
 	var sourceFolder, destFolder Folder
