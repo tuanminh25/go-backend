@@ -9,17 +9,15 @@ import (
 func (f *driver) MoveFolder(name string, dst string) ([]Folder, error) {
 	// Find the source and destination folders
 	var sourceFolder, destFolder Folder
-	var destIndex int
 	sourceFound, destFound := false, false
 
-	for i, folder := range f.folders {
+	for _, folder := range f.folders {
 		if folder.Name == name {
 			sourceFolder = folder
 			sourceFound = true
 		}
 		if folder.Name == dst {
 			destFolder = folder
-			destIndex = i
 			destFound = true
 		}
 		if sourceFound && destFound {
@@ -58,20 +56,7 @@ func (f *driver) MoveFolder(name string, dst string) ([]Folder, error) {
 		}
 	}
 
-	// Find the index of the destination folder in the updated slice
-	destIndex = -1
-	for i, folder := range updatedFolders {
-		if folder.Name == dst {
-			destIndex = i
-			break
-		}
-	}
-
-	if destIndex == -1 {
-		return nil, fmt.Errorf("Error: Destination folder not found in updated list")
-	}
-
-	// Insert the moved folders after the destination folder
+	// Update and add the moved folders
 	movedFolders := make([]Folder, 0)
 	for _, folder := range f.folders {
 		if strings.HasPrefix(folder.Paths, oldPath) {
@@ -81,8 +66,8 @@ func (f *driver) MoveFolder(name string, dst string) ([]Folder, error) {
 		}
 	}
 
-	// Insert moved folders after the destination folder
-	updatedFolders = append(updatedFolders[:destIndex+1], append(movedFolders, updatedFolders[destIndex+1:]...)...)
+	// Append moved folders to the end of updatedFolders
+	updatedFolders = append(updatedFolders, movedFolders...)
 
 	f.folders = updatedFolders
 	return f.folders, nil

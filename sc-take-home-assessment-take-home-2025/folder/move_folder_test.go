@@ -54,7 +54,7 @@ func Test_folder_MoveFolder(t *testing.T) {
 		},
 		{
 			name: "Invalid move: move to child of itself",
-			folders:    getSampleFolders2(orgID1, orgID2),
+			folders:     getSampleFolders2(orgID1, orgID2),
 			sourceName:  "bravo",
 			destName:    "charlie",
 			want:        nil,
@@ -62,7 +62,7 @@ func Test_folder_MoveFolder(t *testing.T) {
 		},
 		{
 			name: "Invalid move: Move to itself",
-			folders:    getSampleFolders2(orgID1, orgID2),
+			folders:     getSampleFolders2(orgID1, orgID2),
 			sourceName:  "bravo",
 			destName:    "bravo",
 			want:        nil,
@@ -70,7 +70,7 @@ func Test_folder_MoveFolder(t *testing.T) {
 		},
 		{
 			name: "Invalid move: Move to different organization",
-			folders:    getSampleFolders2(orgID1, orgID2),
+			folders:     getSampleFolders2(orgID1, orgID2),
 			sourceName:  "bravo",
 			destName:    "foxtrot",
 			want:        nil,
@@ -78,7 +78,7 @@ func Test_folder_MoveFolder(t *testing.T) {
 		},
 		{
 			name: "Invalid move: Move non-existent source",
-			folders:    getSampleFolders2(orgID1, orgID2),
+			folders:     getSampleFolders2(orgID1, orgID2),
 			sourceName:  "invalid_folder",
 			destName:    "delta",
 			want:        nil,
@@ -86,7 +86,7 @@ func Test_folder_MoveFolder(t *testing.T) {
 		},
 		{
 			name: "Move to non-existent destination",
-			folders:    getSampleFolders2(orgID1, orgID2),
+			folders:     getSampleFolders2(orgID1, orgID2),
 			sourceName:  "bravo",
 			destName:    "invalid_folder",
 			want:        nil,
