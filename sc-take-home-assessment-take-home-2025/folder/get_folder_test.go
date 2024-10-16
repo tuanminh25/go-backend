@@ -77,6 +77,9 @@ func Test_folder_GetAllChildFolders(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			f := folder.NewDriver(tt.folders)
 			got := f.GetAllChildFolders(tt.orgID, tt.folderName)
+			// Sort both the expected and actual results
+			sortFolders(tt.want)
+			sortFolders(got)
 			assert.Equal(t, tt.want, got)
 		})
 	}
